@@ -60,6 +60,8 @@ func (g *Gateio) SetDefaults() {
 	g.AssetTypes = []string{ticker.Spot}
 	g.SupportsAutoPairUpdating = true
 	g.SupportsRESTTickerBatching = true
+	g.SupportsRESTAPI = true
+	g.SupportsWebsocketAPI = false
 	g.Requester = request.New(g.Name,
 		request.NewRateLimit(time.Second*10, gateioAuthRate),
 		request.NewRateLimit(time.Second*10, gateioUnauthRate),
@@ -68,7 +70,6 @@ func (g *Gateio) SetDefaults() {
 	g.APIUrl = g.APIUrlDefault
 	g.APIUrlSecondaryDefault = gateioMarketURL
 	g.APIUrlSecondary = g.APIUrlSecondaryDefault
-	g.WebsocketInit()
 }
 
 // Setup sets user configuration

@@ -61,6 +61,8 @@ func (z *ZB) SetDefaults() {
 	z.AssetTypes = []string{ticker.Spot}
 	z.SupportsAutoPairUpdating = true
 	z.SupportsRESTTickerBatching = true
+	z.SupportsRESTAPI = true
+	z.SupportsWebsocketAPI = false
 	z.Requester = request.New(z.Name,
 		request.NewRateLimit(time.Second*10, zbAuthRate),
 		request.NewRateLimit(time.Second*10, zbUnauthRate),
@@ -69,7 +71,6 @@ func (z *ZB) SetDefaults() {
 	z.APIUrl = z.APIUrlDefault
 	z.APIUrlSecondaryDefault = zbMarketURL
 	z.APIUrlSecondary = z.APIUrlSecondaryDefault
-	z.WebsocketInit()
 }
 
 // Setup sets user configuration
@@ -85,7 +86,6 @@ func (z *ZB) Setup(exch config.ExchangeConfig) {
 		z.SetHTTPClientUserAgent(exch.HTTPUserAgent)
 		z.RESTPollingDelay = exch.RESTPollingDelay
 		z.Verbose = exch.Verbose
-		z.Websocket.SetEnabled(exch.Websocket)
 		z.BaseCurrencies = common.SplitStrings(exch.BaseCurrencies, ",")
 		z.AvailablePairs = common.SplitStrings(exch.AvailablePairs, ",")
 		z.EnabledPairs = common.SplitStrings(exch.EnabledPairs, ",")
