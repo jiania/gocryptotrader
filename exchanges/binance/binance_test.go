@@ -8,6 +8,7 @@ import (
 	"github.com/thrasher-/gocryptotrader/currency/pair"
 	"github.com/thrasher-/gocryptotrader/currency/symbol"
 	exchange "github.com/thrasher-/gocryptotrader/exchanges"
+	"github.com/thrasher-/gocryptotrader/exchanges/assets"
 )
 
 // Please supply your own keys here for due diligence testing
@@ -31,17 +32,17 @@ func TestSetup(t *testing.T) {
 		t.Error("Test Failed - Binance Setup() init error")
 	}
 
-	binanceConfig.AuthenticatedAPISupport = true
-	binanceConfig.APIKey = testAPIKey
-	binanceConfig.APISecret = testAPISecret
+	binanceConfig.API.AuthenticatedSupport = true
+	binanceConfig.API.Credentials.Key = testAPIKey
+	binanceConfig.API.Credentials.Secret = testAPISecret
 	b.Setup(binanceConfig)
 }
 
-func TestGetExchangeValidCurrencyPairs(t *testing.T) {
+func TestFetchTradablePairs(t *testing.T) {
 	t.Parallel()
-	_, err := b.GetExchangeValidCurrencyPairs()
+	_, err := b.FetchTradablePairs(assets.AssetTypeSpot)
 	if err != nil {
-		t.Error("Test Failed - Binance GetExchangeValidCurrencyPairs() error", err)
+		t.Error("Test Failed - Binance FetchTradablePairs(asset asets.AssetType) error", err)
 	}
 }
 
@@ -335,11 +336,7 @@ func TestFormatWithdrawPermissions(t *testing.T) {
 // -----------------------------------------------------------------------------------------------------------------------------
 
 func areTestAPIKeysSet() bool {
-	if b.APIKey != "" && b.APIKey != "Key" &&
-		b.APISecret != "" && b.APISecret != "Secret" {
-		return true
-	}
-	return false
+	return b.ValidateAPICredentials()
 }
 
 func TestSubmitOrder(t *testing.T) {
@@ -351,6 +348,7 @@ func TestSubmitOrder(t *testing.T) {
 		FirstCurrency:  symbol.LTC,
 		SecondCurrency: symbol.BTC,
 	}
+
 	response, err := b.SubmitOrder(p, exchange.Buy, exchange.Market, 1, 1, "clientId")
 	if areTestAPIKeysSet() && (err != nil || !response.IsOrderPlaced) {
 		t.Errorf("Order failed to be placed: %v", err)
