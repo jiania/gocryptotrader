@@ -207,7 +207,7 @@ func TickerUpdaterRoutine() {
 					printTickerSummary(result, c, assetType, exchangeName, err)
 					if err == nil {
 						Bot.CommsRelayer.StageTickerData(exchangeName, assetType, result)
-						if Bot.Config.WebsocketServer.Enabled {
+						if Bot.Config.RemoteControl.WebsocketRPC.Enabled {
 							relayWebsocketEvent(result, "ticker_update", assetType.String(), exchangeName)
 						}
 					}
@@ -254,7 +254,7 @@ func OrderbookUpdaterRoutine() {
 					printOrderbookSummary(result, c, assetType, exchangeName, err)
 					if err == nil {
 						Bot.CommsRelayer.StageOrderbookData(exchangeName, assetType, result)
-						if Bot.Config.WebsocketServer.Enabled {
+						if Bot.Config.RemoteControl.WebsocketRPC.Enabled {
 							relayWebsocketEvent(result, "orderbook_update", assetType.String(), exchangeName)
 						}
 					}
